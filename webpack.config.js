@@ -9,13 +9,22 @@ module.exports = {
   entry: {
     bundle: path.resolve(__dirname, "src/index.js"),
   },
-  // Where webpack will output your bundled files
+  /*
+  Where webpack will output your bundled files
+   - [name] refers to the name of the entry title
+   - [contenthash] the numbers after the bundle name
+   - In index.html - it places the bundle name automatically into index.html
+  */
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name][contenthash].js",
     clean: true,
-    assetModuleFilename: "[name][ext]",
+    assetModuleFilename: "[name][ext]",  // we need this to maintain the name of the assets
   },
+  /*
+   - Devtools for the dev server, lists the commands when npm run dev is used
+   - Doesn't run directly from the dist files
+  */
   devtool: "source-map",
   devServer: {
     static: {
@@ -27,7 +36,10 @@ module.exports = {
     compress: true,
     historyApiFallback: true,
   },
-  // Terminal Command: npm i -D sass style-loader css-loader sass-loader
+  /* Terminal Commands used:
+   - npm i -D sass style-loader css-loader sass-loader
+   - npm i -D babel-loader @babel/core @babel/preset-env
+  */
   module: {
     rules: [
       {
@@ -36,6 +48,8 @@ module.exports = {
         use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
+        // Any file that has as .js extension
+        // We don't want to mess with node_modules
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -45,6 +59,7 @@ module.exports = {
           },
         },
       },
+      // Determine the type of assets allowed
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: "asset/resource",
@@ -52,8 +67,8 @@ module.exports = {
     ],
   },
   /*
-   When build runs, injects template into index.html.
-   You can find the template in the src folder
+   - When build runs, injects template into index.html.
+   - You can find the template in the src folder
   */
   plugins: [
     new HtmlWebpackPlugin({
@@ -61,6 +76,7 @@ module.exports = {
       filename: "index.html",
       template: "src/template.html",
     }),
+    // Provides an analyzer after giving webpack commands
     new BundleAnalyzerPlugin(),
   ],
 };
